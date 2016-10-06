@@ -23,6 +23,21 @@ else
 <br />
 <br />
 
+@if (ViewBag.ActiveGoodsStatusMenu == 0)
+{
+    <!-- Single button -->
+    <div class="btn-group">
+        <button type="button" class="btn btn-primary dropdown-toggle menuForChecked" data-toggle="dropdown"><img class="chekpic" src="~/images/images.png" /> Для выбранных <span class="caret"></span></button>
+        <ul class="dropdown-menu" role="menu">
+            <li><a href="#">Действие</a></li>
+            <li><a href="#">Другое действие</a></li>
+            <li><a href="#">Что-то иное</a></li>
+            <li class="divider"></li>
+            <li><a href="#">Отдельная ссылка</a></li>
+        </ul>
+    </div>
+}
+
 <!--КНОПКА СОЗДАНИЯ ПОЗИЦИИ-->
 <div class="col-md-10">
     <a class="btn btn-primary btn-newpos" role="button" asp-controller="AdminCompanyGoods" asp-action="EditGood">Новая позиция</a>
