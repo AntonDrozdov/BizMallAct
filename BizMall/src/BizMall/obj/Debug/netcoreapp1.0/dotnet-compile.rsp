@@ -282,6 +282,7 @@ E:\!DEVELOP\BizMallAct\BizMall\src\BizMall\Services\IEmailSender.cs
 E:\!DEVELOP\BizMallAct\BizMall\src\BizMall\Services\ISmsSender.cs
 E:\!DEVELOP\BizMallAct\BizMall\src\BizMall\Services\MessageServices.cs
 E:\!DEVELOP\BizMallAct\BizMall\src\BizMall\Utils\FromByteToBase64Converter.cs
+E:\!DEVELOP\BizMallAct\BizMall\src\BizMall\Utils\GetIntIds.cs
 E:\!DEVELOP\BizMallAct\BizMall\src\BizMall\ViewComponents\AllCategories.cs
 E:\!DEVELOP\BizMallAct\BizMall\src\BizMall\ViewModels\AccountViewModels\ExternalLoginConfirmationViewModel.cs
 E:\!DEVELOP\BizMallAct\BizMall\src\BizMall\ViewModels\AccountViewModels\ForgotPasswordViewModel.cs

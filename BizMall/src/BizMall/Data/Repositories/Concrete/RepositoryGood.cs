@@ -110,6 +110,26 @@ namespace BizMall.Data.Repositories.Concrete
             return good;
         }
 
+        public void ArchieveGoods(List<int> ids) {
+            var goods = _ctx.Goods.Where(g => ids.Contains(g.Id)).ToList();
+            foreach (var good in goods) {
+                good.UpdateTime = good.UpdateTime.AddYears(-1);
+            }
+            _ctx.Goods.UpdateRange(goods);
+            _ctx.SaveChanges();
+        }
+
+        public void ActivateGoods(List<int> ids)
+        {
+            var goods = _ctx.Goods.Where(g => ids.Contains(g.Id)).ToList();
+            foreach (var good in goods)
+            {
+                good.UpdateTime = DateTime.Now;
+            }
+            _ctx.Goods.UpdateRange(goods);
+            _ctx.SaveChanges();
+        }
+
         private void DeleteAllGoodImages(int goodId)
         {
             Good dbEntry = _ctx.Goods.Where(g => g.Id == goodId)

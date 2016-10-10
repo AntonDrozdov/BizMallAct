@@ -165,15 +165,15 @@
                 url: "/AdminCompanyGoods/AddGoodImage/",
                 type: 'POST',
                 data: formData,
-                processData: false,  // tell jQuery not to process the data
-                contentType: false,  // tell jQuery not to set contentType
+                processData: false,  
+                contentType: false,  
                 success: function (image) {
                     $.ajax({
                         url: "/AdminCompanyGoods/GetImageForThumb/" + image.id,
                         type: 'GET',
                         data: formData,
-                        processData: false,  // tell jQuery not to process the data
-                        contentType: false,  // tell jQuery not to set contentType
+                        processData: false, 
+                        contentType: false, 
                         success: function (data) {
                             //добавление в скрытое поле id изображений нового id изображения
                             var newgoodImagesIds = $("#goodImagesIds").val() + data.id + "_";

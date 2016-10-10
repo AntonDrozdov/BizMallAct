@@ -23,17 +23,72 @@ else
 <br />
 <br />
 
-@if (ViewBag.ActiveGoodsStatusMenu == 0)
+<script type="text/javascript">
+    function Archieve() {
+        //перебрать все checkbox(checkedToDoSmth) на странице
+        var checkedGoods = "";
+        $("input[name='checkedToDoSmth']").each(function () {
+            if ($(this)[0].checked == true) {
+                checkedGoods += $(this).val() + "_";
+            }
+        });
+
+        //отправить запрос на обновление статусов
+        var formData = new FormData();
+        formData.append('checkedGoods', checkedGoods);
+        $.ajax({
+            url: "/AdminCompanyGoods/ArchieveGoods",
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function () {
+                window.location.replace("/AdminCompanyGoods/Goods?goodsStatus=1");
+            }
+        });
+    }
+
+    function Activate() {
+        //перебрать все checkbox(checkedToDoSmth) на странице
+        var checkedGoods = "";
+        $("input[name='checkedToDoSmth']").each(function () {
+            if ($(this)[0].checked == true) {
+                checkedGoods += $(this).val() + "_";
+            }
+        });
+
+        //отправить запрос на обновление статусов
+        var formData = new FormData();
+        formData.append('checkedGoods', checkedGoods);
+        $.ajax({
+            url: "/AdminCompanyGoods/ActivateGoods",
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function () {
+                window.location.replace("/AdminCompanyGoods/Goods?goodsStatus=0");
+            }
+        });
+    }
+
+</script>
+
+@if (ViewBag.ActiveGoodsStatusMenu == 1)
 {
-    <!-- Single button -->
     <div class="btn-group">
         <button type="button" class="btn btn-primary dropdown-toggle menuForChecked" data-toggle="dropdown"><img class="chekpic" src="~/images/images.png" /> Для выбранных <span class="caret"></span></button>
         <ul class="dropdown-menu" role="menu">
-            <li><a href="#">Действие</a></li>
-            <li><a href="#">Другое действие</a></li>
-            <li><a href="#">Что-то иное</a></li>
-            <li class="divider"></li>
-            <li><a href="#">Отдельная ссылка</a></li>
+            <li><a href="#" onclick="Archieve();">В Архив</a></li>
+        </ul>
+    </div>
+}
+else
+{
+    <div class="btn-group">
+        <button type="button" class="btn btn-primary dropdown-toggle menuForChecked" data-toggle="dropdown"><img class="chekpic" src="~/images/images.png" /> Для выбранных <span class="caret"></span></button>
+        <ul class="dropdown-menu" role="menu">
+            <li><a href="#" onclick="Activate();">Активировать</a></li>
         </ul>
     </div>
 }
@@ -49,16 +104,21 @@ else
     <table class="table">
         <thead>
         <tr>
+            <th></th>
             <th>Изображение</th>
             <th>Название</th>
             <th>Категория</th>
-            <th>Дней до окончания размещения</th>
+            @if (ViewBag.ActiveGoodsStatusMenu == 1)
+            {
+                <th>Дней до окончания размещения</th>
+            }
             <th>Опции</th>
         </tr>
         </thead>
         @foreach (var gvm in ViewBag.GoodsVM)
         {
             <tr>
+                <td><input type="checkbox" name="checkedToDoSmth" value="@gvm.Id"/></td>
                 <td>
                     <img  height="100" src='@gvm.MainImageInBase64'/>
                     @*<img height="100" width="100" src='@Url.Action("GetGoodMainImage", "AdminCompanyGoods", new {GoodId = good.Id})'/>*@
@@ -72,7 +132,11 @@ else
                 {
                     <td>@gvm.Category.Title</td>
                 }
-                <td>@gvm.DaysToSetInActiveStatus</td>
+                @if (ViewBag.ActiveGoodsStatusMenu == 1)
+                {
+                    <td>@gvm.DaysToSetInActiveStatus дн.</td>
+                }
+                
                 <td style="width: 10%;"><a class="btn btn-primary" role="button" asp-controller="AdminCompanyGoods" asp-action="DeleteGood" asp-route-goodId="@gvm.Id" asp-route-goodsStatus="@ViewBag.ActiveGoodsStatusMenu" >Удалить</a></td>
             </tr>
         }

@@ -61,7 +61,7 @@ namespace BizMall.Controllers
 
                 List<GoodViewModel> GoodsVM = new List<GoodViewModel>();
                 foreach (var good in Goods) {
-                    var iDaysToSetInActiveStatus = (DateTime.Now - good.UpdateTime).Days;
+                    var iDaysToSetInActiveStatus = 31 - (DateTime.Now - good.UpdateTime).Days;
                     GoodViewModel gvm = new GoodViewModel
                     {
                         Amount = good.Amount,
@@ -202,8 +202,28 @@ namespace BizMall.Controllers
             return RedirectToAction("Goods", new { goodsStatus = goodsStatus });
         }
 
+
+
         ///для ajax
-        
+
+        /// <summary>
+        /// используестя после успешного добавлениия изображения в бД для формирования превью
+        /// </summary>
+        public bool ArchieveGoods(string checkedGoods)
+        {
+            _repositoryGood.ArchieveGoods(GetIntIds.ConvertIdsToInt(checkedGoods));
+
+            //return RedirectToAction("Goods", new { goodsStatus = GoodStatus.Active });
+            return true;
+        }
+
+        public bool ActivateGoods(string checkedGoods)
+        {
+            _repositoryGood.ActivateGoods(GetIntIds.ConvertIdsToInt(checkedGoods));
+
+            return true;
+            //return RedirectToAction("Goods", new { goodsStatus = GoodStatus.InActive});
+        }
         /// <summary>
         /// используестя после успешного добавлениия изображения в бД для формирования превью
         /// </summary>

@@ -14,5 +14,7 @@ namespace BizMall.Data.Repositories.Abstract
         IQueryable<Good> ShopGoodsFullInformation(int ShopId, GoodStatus goodsStatus);
         IQueryable<Good> ShopGoods(int ShopId);
         Good SaveGood(Good good, Company company);
+        void ArchieveGoods(List<int> ids);
+        void ActivateGoods(List<int> ids);
     }
 }
