@@ -3,16 +3,92 @@
     ViewData["Title"] = "Регистрация";
 }
 
-<h2>@ViewData["Title"].</h2>
+<h2>@ViewData["Title"]</h2>
+<script type="text/javascript" >
+    function ShowPrivatePersonDataBlock() {
+        $("#CompanyDataBlock").hide();
+        $("#PrivatePersonDataBlock").show();
+    }
+
+    function ShowCompanyDataBlock() {
+        $("#CompanyDataBlock").show();
+        $("#PrivatePersonDataBlock").hide();
+    }
+
+</script>
 
 <form asp-controller="Account" asp-action="Register" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="form-horizontal">
     <hr />
+    
+    <br />
+    <div class="form-group">
+        <label class="col-md-2 control-label">Я ПРЕДСТАВЛЯЮ:</label>
+        <div class="col-md-10">
+            <div class="btn-group" data-toggle="buttons">
+                <label class="btn btn-success active" onclick="ShowPrivatePersonDataBlock();">
+                    <input type="radio" name="options" id="PrivatePerson" autocomplete="off"  checked> 
+                    Частное лицо
+                </label>
+                <label class="btn btn-success" onclick="ShowCompanyDataBlock();">
+                    <input type="radio" name="options" id="Company" autocomplete="off" > 
+                    Компания
+                </label>
+            </div>
+        </div>
+    </div>
+    <br />
+
     <div asp-validation-summary="All" class="text-danger"></div>
+
+    <div id="PrivatePersonDataBlock">
+        <div class="form-group">
+            <label class="col-md-2 control-label">Имя:</label>
+            <div class="col-md-10">
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+
+    <div id="CompanyDataBlock" style="display:none;">
+        <div class="form-group">
+            <label class="col-md-2 control-label">Название:</label>
+            <div class="col-md-10">
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            @*<input asp-for="CompanyLogoId" type="hidden" id="goodImagesIds" readonly="readonly" value="@Model.CompanyLogo" />*@
+            <label class="col-md-2 control-label">Логотип компании:</label>
+            <div class="col-md-3">
+                <a class='btn btn-default' style="height:35px; margin-bottom:5px;">
+                    Загрузить логотип ...
+                    <input type="file"
+                           id="loadfile"
+                           name="newimages"
+                           style="position: absolute;z-index: 2; top: 0; left: 0; opacity: 0; background-color: transparent;color: transparent;"
+                           onchange='saveImage();'>
+                </a>
+            </div>
+        </div>
+        @*<input asp-for="CompanyLogoId" type="hidden" id="goodImagesIds" readonly="readonly" value="@Model.CompanyLogo" />*@
+    </div>
+    
     <div class="form-group">
         <label asp-for="Email" class="col-md-2 control-label"></label>
         <div class="col-md-10">
             <input asp-for="Email" class="form-control" />
             <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
+    </div>
+    @*Дополнить нужными хелперами для модели и валидацией*@
+    <div class="form-group">
+        <label  class="col-md-2 control-label">Телефон:</label>
+        <div class="col-md-10">
+            <input class="form-control" />
+            <span  class="text-danger"></span>
         </div>
     </div>
     <div class="form-group">
