@@ -204,11 +204,13 @@ namespace BizMall.Controllers
 
 
 
-        ///для ajax
-
+        //для ajax
+        
         /// <summary>
-        /// используестя после успешного добавлениия изображения в бД для формирования превью
+        /// деактивация товаров
         /// </summary>
+        /// <param name="checkedGoods"></param>
+        /// <returns></returns>
         public bool ArchieveGoods(string checkedGoods)
         {
             _repositoryGood.ArchieveGoods(GetIntIds.ConvertIdsToInt(checkedGoods));
@@ -217,33 +219,17 @@ namespace BizMall.Controllers
             return true;
         }
 
+        /// <summary>
+        /// активация товаров
+        /// </summary>
+        /// <param name="checkedGoods"></param>
+        /// <returns></returns>
         public bool ActivateGoods(string checkedGoods)
         {
             _repositoryGood.ActivateGoods(GetIntIds.ConvertIdsToInt(checkedGoods));
 
             return true;
             //return RedirectToAction("Goods", new { goodsStatus = GoodStatus.InActive});
-        }
-        /// <summary>
-        /// используестя после успешного добавлениия изображения в бД для формирования превью
-        /// </summary>
-        /// <param name="Id"></param>
-        /// <returns></returns>
-        [HttpGet]
-        public JsonResult GetImageForThumb(int Id)
-        {
-            Image image = _repositoryImage.GetImage(Id);
-
-            ImageViewModel imageViewModel = new ImageViewModel
-            {
-                GoodId = 0,
-                Id = image.Id,
-                goodImageIds = 0 + "_" + image.Id,
-                ImageMimeType = image.ImageMimeType,
-                ImageInBase64 = FromByteToBase64Converter.GetImageBase64Src(image)
-            };
-
-            return Json(imageViewModel);
         }
 
         /// <summary>
@@ -287,12 +273,37 @@ namespace BizMall.Controllers
         }
 
         /// <summary>
+        /// используестя после успешного добавлениия изображения в бД для формирования превью
+        /// </summary>
+        /// <param name="Id"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public JsonResult GetImageForThumb(int Id)
+        {
+            Image image = _repositoryImage.GetImage(Id);
+
+            ImageViewModel imageViewModel = new ImageViewModel
+            {
+                GoodId = 0,
+                Id = image.Id,
+                goodImageIds = 0 + "_" + image.Id,
+                ImageMimeType = image.ImageMimeType,
+                ImageInBase64 = FromByteToBase64Converter.GetImageBase64Src(image)
+            };
+
+            return Json(imageViewModel);
+        }
+
+        /// <summary>
         /// ajax:удаление на лету изображения к товару
         /// </summary>
         /// <param name="goodImageIds"></param>
         /// <returns></returns>
-        public string DeleteGoodImage(string goodImageIds) {
-            if (goodImageIds != null) {
+        [HttpPost]
+        public string DeleteGoodImage(string goodImageIds)
+        {
+            if (goodImageIds != null)
+            {
                 string[] parameteres = goodImageIds.Split('_');
 
                 int goodId = Convert.ToInt32(parameteres[0]);
@@ -300,8 +311,8 @@ namespace BizMall.Controllers
                 _repositoryImage.DeleteImage(imageId);
 
                 return imageId.ToString();//для того чтобы front переделал строку id зиображений товара в актуальную
-            }            
-            return null; 
+            }
+            return null;
         }
     }
 }

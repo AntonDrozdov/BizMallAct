@@ -46,7 +46,7 @@
                     <div class="imageTable">
                         <table>
                             <tr id="images">
-                                <td style="text-align:center;padding:3px;">
+                                <td style="text-align:center;padding:3px;"></td>
                             </tr>
                         </table>
                     </div>
@@ -98,17 +98,9 @@
             <a class='btn btn-default col-md-2 ' style="margin-left: 5px; margin-top: 5px;" asp-controller="AdminCompanyGoods" asp-action="Goods">Назад</a>
         </div>
     </div>
+</form>
 
-    <script type="text/javascript">
-        function GetIndex(arr, el) {
-            for(var i=0; i<arr.length; i++){
-                if(arr[i]===el){
-                    return i;
-                }
-            }
-            return -1;
-        }
-
+<script type="text/javascript">
         function deleteGoodImage(goodImageIds) {
             var formData = new FormData();
             formData.append('goodImageIds', goodImageIds);
@@ -165,15 +157,15 @@
                 url: "/AdminCompanyGoods/AddGoodImage/",
                 type: 'POST',
                 data: formData,
-                processData: false,  
-                contentType: false,  
+                processData: false,
+                contentType: false,
                 success: function (image) {
                     $.ajax({
                         url: "/AdminCompanyGoods/GetImageForThumb/" + image.id,
                         type: 'GET',
                         data: formData,
-                        processData: false, 
-                        contentType: false, 
+                        processData: false,
+                        contentType: false,
                         success: function (data) {
                             //добавление в скрытое поле id изображений нового id изображения
                             var newgoodImagesIds = $("#goodImagesIds").val() + data.id + "_";
@@ -194,9 +186,7 @@
                 }
             });
         }
-
-    </script>
-</form>
+</script>
 
 @section Scripts {
     @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }

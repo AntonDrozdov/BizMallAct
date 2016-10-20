@@ -12,6 +12,11 @@ using BizMall.Models;
 using BizMall.ViewModels.AccountViewModels;
 using BizMall.Services;
 using BizMall.Data.Repositories.Abstract;
+using Microsoft.AspNetCore.Http;
+using BizMall.Models.CommonModels;
+using System.IO;
+using BizMall.ViewModels.AdminCompanyGoods;
+using BizMall.Utils;
 
 namespace BizMall.Controllers
 {
@@ -24,6 +29,7 @@ namespace BizMall.Controllers
         private readonly ISmsSender _smsSender;
         private readonly ILogger _logger;
         private readonly IRepositoryCompany _repositoryCompany;
+        private readonly IRepositoryImage _repositoryImage;
 
 
         public AccountController(
@@ -32,7 +38,8 @@ namespace BizMall.Controllers
             IEmailSender emailSender,
             ISmsSender smsSender,
             ILoggerFactory loggerFactory,
-            IRepositoryCompany repositoryCompany)
+            IRepositoryCompany repositoryCompany,
+            IRepositoryImage repositoryImage)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -40,6 +47,7 @@ namespace BizMall.Controllers
             _smsSender = smsSender;
             _logger = loggerFactory.CreateLogger<AccountController>();
             _repositoryCompany = repositoryCompany;
+            _repositoryImage = repositoryImage;
         }
 
         //
@@ -94,7 +102,54 @@ namespace BizMall.Controllers
         // GET: /Account/Register
         [HttpGet]
         [AllowAnonymous]
-        public IActionResult Register(string returnUrl = null)
+        public IActionResult RegisterCompany(string returnUrl = null)
+        {
+            ViewData["ReturnUrl"] = returnUrl;
+
+            var cecvm = new CreateEditCompanyViewModel();
+            return View(cecvm);
+        }
+
+        //
+        // POST: /Account/Register
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RegisterCompany(CreateEditCompanyViewModel model, string returnUrl = null)
+        {
+            ViewData["ReturnUrl"] = returnUrl;
+            if (ModelState.IsValid)
+            {
+                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                var result = await _userManager.CreateAsync(user, model.Password);
+                if (result.Succeeded)
+                {
+                    // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=532713
+                    // Send an email with this link
+                    //var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                    //var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: HttpContext.Request.Scheme);
+                    //await _emailSender.SendEmailAsync(model.Email, "Confirm your account",
+                    //    $"Please confirm your account by clicking this link: <a href='{callbackUrl}'>link</a>");
+                    await _signInManager.SignInAsync(user, isPersistent: false);
+                    _logger.LogInformation(3, "User created a new account with password.");
+
+                    //При регистрации пользователя для него по умолчанию создается магазин 
+                    _repositoryCompany.CreateCompanyAccount(user.Id, model);
+
+                    return RedirectToAction(nameof(HomeController.Index), "Home");
+                }
+                AddErrors(result);
+            }
+
+            // If we got this far, something failed, redisplay form
+            return View(model);
+        }
+
+        //
+        // GET: /Account/Register
+        [HttpGet]
+        [AllowAnonymous]
+        public IActionResult RegisterPrivatePerson(string returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
             return View();
@@ -105,7 +160,7 @@ namespace BizMall.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Register(RegisterViewModel model, string returnUrl = null)
+        public async Task<IActionResult> RegisterPrivatePerson(CreateEditCompanyViewModel model, string returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
             if (ModelState.IsValid)
@@ -473,5 +528,92 @@ namespace BizMall.Controllers
         }
 
         #endregion
+
+        ///для ajax
+
+        /// <summary>
+        /// ajax:добавление на лету изображения к товару
+        /// </summary>
+        /// <param name="Id"></param>
+        /// <param name="newimages"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [AllowAnonymous]
+        public JsonResult AddCompanyImage(int Id, ICollection<IFormFile> newimages)
+        {
+            //просто пишем изображение в бд
+            Image image = new Image
+            {
+                Id = 0,
+                IsMain = true,
+                Description = "",
+                ImageMimeType = newimages.ToList()[0].ContentType,
+            };
+
+            using (var reader = new StreamReader(newimages.ToList()[0].OpenReadStream()))
+            {
+                Stream stream = reader.BaseStream;
+                Byte[] inArray = new Byte[(int)stream.Length];
+                stream.Read(inArray, 0, (int)stream.Length);
+
+                image.ImageContent = inArray;
+                if (Id != 0)
+                {
+                    image.Companies.Add(new Models.CompanyModels.RelCompanyImage
+                    {
+                        ImageId = image.Id,
+                        CompanyId = Id
+                    });
+                }
+            }
+
+            //картинки в бд
+            return Json(_repositoryImage.SaveImage(image));
+        }
+
+        /// <summary>
+        /// используестя после успешного добавлениия изображения в бД для формирования превью
+        /// </summary>
+        /// <param name="Id"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [AllowAnonymous]
+        public JsonResult GetImageForThumb(int Id)
+        {
+            Image image = _repositoryImage.GetImage(Id);
+
+            ImageViewModel imageViewModel = new ImageViewModel
+            {
+                GoodId = 0,
+                Id = image.Id,
+                goodImageIds = 0 + "_" + image.Id,
+                ImageMimeType = image.ImageMimeType,
+                ImageInBase64 = FromByteToBase64Converter.GetImageBase64Src(image)
+            };
+
+            return Json(imageViewModel);
+        }
+
+        /// <summary>
+        /// ajax:удаление на лету изображения к товару
+        /// </summary>
+        /// <param name="goodImageIds"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [AllowAnonymous]
+        public string DeleteGoodImage(string companyImagesIds)
+        {
+            if (companyImagesIds != null)
+            {
+                string[] parameteres = companyImagesIds.Split('_');
+
+                int goodId = Convert.ToInt32(parameteres[0]);
+                int imageId = Convert.ToInt32(parameteres[1]);
+                _repositoryImage.DeleteImage(imageId);
+
+                return imageId.ToString();//для того чтобы front переделал строку id зиображений товара в актуальную
+            }
+            return null;
+        }
     }
 }

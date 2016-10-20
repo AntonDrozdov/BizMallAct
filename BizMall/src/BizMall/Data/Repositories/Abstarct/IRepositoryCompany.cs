@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 
 using BizMall.Models;
 using BizMall.Models.CompanyModels;
+using BizMall.ViewModels.AccountViewModels;
 
 namespace BizMall.Data.Repositories.Abstract
 {
@@ -14,5 +15,7 @@ namespace BizMall.Data.Repositories.Abstract
         Company GetUserCompany(ApplicationUser currentUser);
         Company GetCompany(int companyId);
         Company CreateDefaultUserCompany(string userId);
+        Company CreateCompanyAccount(string userId, CreateEditCompanyViewModel model);
+        Company CreatePrivatePersonAccount(string userId, CreateEditCompanyViewModel model);
     }
 }

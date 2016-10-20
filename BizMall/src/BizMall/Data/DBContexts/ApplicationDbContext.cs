@@ -39,7 +39,7 @@ namespace BizMall.Data.DBContexts
                 .WithOne(c => c.User)
                 .HasForeignKey<Company>(c => c.ApplicationUserId);
 
-            //товары компании
+            //изображения товара
             builder.Entity<RelGoodImage>().HasKey(r => new { r.ImageId, r.GoodId });
             builder.Entity<RelGoodImage>()
                 .HasOne(r => r.Image)
@@ -60,6 +60,17 @@ namespace BizMall.Data.DBContexts
                 .HasOne(r => r.Good)
                 .WithMany(l => l.Companies)
                 .HasForeignKey(r => r.GoodId);
+
+            //изображения компании
+            builder.Entity<RelCompanyImage>().HasKey(r => new { r.CompanyId, r.ImageId});
+            builder.Entity<RelCompanyImage>()
+                .HasOne(r => r.Company)
+                .WithMany(l => l.Images)
+                .HasForeignKey(r => r.CompanyId);
+            builder.Entity<RelCompanyImage>()
+                .HasOne(r => r.Image)
+                .WithMany(l => l.Companies)
+                .HasForeignKey(r => r.ImageId);
         }
     }
 }

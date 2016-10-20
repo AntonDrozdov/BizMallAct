@@ -108,9 +108,15 @@ namespace BizMall.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<int>("AccountType");
+
                     b.Property<string>("ApplicationUserId");
 
+                    b.Property<string>("ContactEmail");
+
                     b.Property<string>("Description");
+
+                    b.Property<string>("Telephone");
 
                     b.Property<string>("Title");
 
@@ -159,6 +165,21 @@ namespace BizMall.Migrations
                     b.HasIndex("GoodId");
 
                     b.ToTable("RelCompanyGood");
+                });
+
+            modelBuilder.Entity("BizMall.Models.CompanyModels.RelCompanyImage", b =>
+                {
+                    b.Property<int>("CompanyId");
+
+                    b.Property<int>("ImageId");
+
+                    b.HasKey("CompanyId", "ImageId");
+
+                    b.HasIndex("CompanyId");
+
+                    b.HasIndex("ImageId");
+
+                    b.ToTable("RelCompanyImage");
                 });
 
             modelBuilder.Entity("BizMall.Models.CompanyModels.RelGoodImage", b =>
@@ -314,6 +335,19 @@ namespace BizMall.Migrations
                     b.HasOne("BizMall.Models.CompanyModels.Good", "Good")
                         .WithMany("Companies")
                         .HasForeignKey("GoodId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("BizMall.Models.CompanyModels.RelCompanyImage", b =>
+                {
+                    b.HasOne("BizMall.Models.CompanyModels.Company", "Company")
+                        .WithMany("Images")
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("BizMall.Models.CommonModels.Image", "Image")
+                        .WithMany("Companies")
+                        .HasForeignKey("ImageId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

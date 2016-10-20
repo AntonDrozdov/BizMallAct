@@ -15,7 +15,9 @@
                   asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
             <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
         </environment>
+
         @Html.ApplicationInsightsJavaScript(TelemetryConfiguration)
+
     </head>
     <body>
         <div class="navbar navbar-inverse navbar-fixed-top">
@@ -37,11 +39,16 @@
                     </ul>
                     @await Html.PartialAsync("_LoginPartial")
                 </div>
+                
+
+
+
             </div>
         </div>
         <div class="container body-content">
             @RenderBody()
             <hr />
+
             <footer>
                 <p>&copy; 2016 - BizMall</p>
             </footer>
@@ -50,6 +57,7 @@
         <environment names="Development">
             <script src="~/lib/jquery/dist/jquery.js"></script>
             <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+            <script src="~/lib/jquery-ui/jquery-ui.js"></script>
             <script src="~/js/site.js" asp-append-version="true"></script>
         </environment>
         <environment names="Staging,Production">
@@ -65,5 +73,31 @@
         </environment>
 
         @RenderSection("scripts", required: false)
+
+        <div class="overlay" title="окно"></div>
+        <div class="popup">
+            <div class="close_window">x</div>            
+            <span>Здесь логотип сайта... :)</span>
+            <br />
+            <br />
+            <table style="margin-left:5px;"><tr>
+                <td>
+                    <a style ="font-size:14px;"class='btn btn-success' asp-controller="Account" asp-action="RegisterCompany">Компания</a>
+                </td>
+                <td style="margin-left:5px;" >
+                    <a  style ="margin-left:5px;font-size:14px;" class='btn btn-success ' asp-controller="Account" asp-action="RegisterPrivatePerson">Частное лицо</a>
+                </td>
+            </tr></table>
+        </div>
+
+        <script>
+            $('.popup .close_window, .overlay').click(function () {
+                $('.popup, .overlay').css({ 'opacity': 0, 'visibility': 'hidden' });
+            });
+            $('a.open_window').click(function (e) {
+                $('.popup, .overlay').css({ 'opacity': 1, 'visibility': 'visible' });
+                e.preventDefault();
+            });
+        </script>
     </body>
 </html>
