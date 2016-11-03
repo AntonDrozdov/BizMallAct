@@ -20,21 +20,11 @@ namespace BizMall.Data.Repositories.Concrete
         {
         }
 
-        public Company CreateCompanyAccount(string userId, CreateEditCompanyViewModel model)
+        public Company CreateCompanyAccount(Company company)
         {
-            var company = new Company {
-                ApplicationUserId = userId,
-                AccountType = AccountType.Company,
-                Title = model.Name,
-                Description = model.ActivityDescription,
-                ContactEmail = model.Email,
-                Telephone = model.Telephone                
-            };
-
             _ctx.Companies.Add(company);
             _ctx.SaveChanges();
             return company;
-            throw new NotImplementedException();
         }
 
         public Company CreateDefaultUserCompany(string userId)

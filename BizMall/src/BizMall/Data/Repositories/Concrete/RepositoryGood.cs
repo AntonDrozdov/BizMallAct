@@ -95,7 +95,8 @@ namespace BizMall.Data.Repositories.Concrete
                 _ctx.SaveChanges();
             }
             //Добавление НОВОЙ позиции (в т.ч. дата UpdateStatus выставляется на текущий день - берется из параметра - good)
-            else {         
+            else
+            {         
                 _ctx.Goods.Add(good);
                 _ctx.SaveChanges();
 

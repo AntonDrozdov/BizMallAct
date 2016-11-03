@@ -36,8 +36,13 @@ namespace BizMall.ViewModels.AccountViewModels
 
         //все про изображения
         public List<ImageViewModel> ImageViewModels { get; set; }
-        public string MainImageInBase64 { get; set; }
+        public string LogoImageInBase64 { get; set; }
         public string companyImagesIds { get; set; } //в формате id_id_id_id_...
+
+        public CreateEditCompanyViewModel()
+        {
+            ImageViewModels = new List<ImageViewModel>();
+        }
 
     }
 }

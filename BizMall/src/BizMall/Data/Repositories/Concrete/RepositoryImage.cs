@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using BizMall.Data.DBContexts;
 using BizMall.Data.Repositories.Abstract;
 using BizMall.Models.CommonModels;
@@ -47,6 +48,13 @@ namespace BizMall.Data.Repositories.Concrete
         {
             //return _ctx.Images.Where(i => i.GoodId == GoodId).SingleOrDefault();
             return null;
+        }
+
+        public void DeleteImages(int[] ids)
+        {
+            var images = _ctx.Images.Where(i => ids.Contains(i.Id));
+            _ctx.Images.RemoveRange(images);
+            _ctx.SaveChanges();
         }
     }
 }

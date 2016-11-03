@@ -14,8 +14,7 @@ namespace BizMall.Data.Repositories.Abstract
         IEnumerable<Company> GetAllCompanies();
         Company GetUserCompany(ApplicationUser currentUser);
         Company GetCompany(int companyId);
-        Company CreateDefaultUserCompany(string userId);
-        Company CreateCompanyAccount(string userId, CreateEditCompanyViewModel model);
+        Company CreateCompanyAccount(Company company);
         Company CreatePrivatePersonAccount(string userId, CreateEditCompanyViewModel model);
     }
 }

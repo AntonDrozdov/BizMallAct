@@ -17,6 +17,7 @@ using BizMall.Models.CommonModels;
 using System.IO;
 using BizMall.ViewModels.AdminCompanyGoods;
 using BizMall.Utils;
+using BizMall.Models.CompanyModels;
 
 namespace BizMall.Controllers
 {
@@ -133,8 +134,34 @@ namespace BizMall.Controllers
                     await _signInManager.SignInAsync(user, isPersistent: false);
                     _logger.LogInformation(3, "User created a new account with password.");
 
-                    //При регистрации пользователя для него по умолчанию создается магазин 
-                    _repositoryCompany.CreateCompanyAccount(user.Id, model);
+                    //ФОРМИРУЕМ СПИСОК ИЗОБРАЖЕНИЙ
+                    List<RelCompanyImage> relImages = new List<RelCompanyImage>();
+                    //если строка id изображений непуста тогда формируем список
+                    if (model.companyImagesIds!= null)
+                    {
+                        string[] strImgids = model.companyImagesIds.Trim().Substring(0, model.companyImagesIds.Length - 1).Split('_');
+                        foreach (var strImageId in strImgids)
+                        {
+                            if (strImageId.Length == 0) continue;//это случай когдау товара нет изображений, но в массив все равно попадает распарсеная пустая строка
+                            relImages.Add(new RelCompanyImage
+                            {
+                                CompanyId = 0,
+                                ImageId = Convert.ToInt32(strImageId)
+                            });
+                        }
+                    }
+
+                    //При регистрации пользователя для него по умолчанию создается компания с параметрами которые он задал
+                    _repositoryCompany.CreateCompanyAccount(new Company
+                    {
+                        ApplicationUserId = user.Id,
+                        AccountType = AccountType.Company,
+                        Title = model.Name,
+                        Description = model.ActivityDescription,
+                        ContactEmail = model.Email,
+                        Telephone = model.Telephone,
+                        Images = relImages
+                    });
 
                     return RedirectToAction(nameof(HomeController.Index), "Home");
                 }
@@ -142,6 +169,27 @@ namespace BizMall.Controllers
             }
 
             // If we got this far, something failed, redisplay form
+            // заполняем список изображений уже добавленных пользователем при регистрации
+            if (model.companyImagesIds != null)
+            {
+                List<int> logoids = GetIntIds.ConvertIdsToInt(model.companyImagesIds);
+                model.LogoImageInBase64 = FromByteToBase64Converter.GetImageBase64Src(_repositoryImage.GetImage(logoids[0]));
+                foreach (var id in logoids)
+                {
+                    Image im = _repositoryImage.GetImage(id);
+                    //для каждого изображения составляем соответствующую модель отображения
+                    model.ImageViewModels.Add(
+                        new ImageViewModel
+                        {
+                            GoodId = 0,
+                            Id = im.Id,
+                            goodImageIds = "0_" + im.Id,
+                            ImageMimeType = im.ImageMimeType,
+                            ImageInBase64 = FromByteToBase64Converter.GetImageBase64Src(im)
+                        }
+                    );                    
+                }
+            }
             return View(model);
         }
 
@@ -179,7 +227,7 @@ namespace BizMall.Controllers
                     _logger.LogInformation(3, "User created a new account with password.");
 
                     //При регистрации пользователя для него по умолчанию создается магазин    
-                    _repositoryCompany.CreateDefaultUserCompany(user.Id);
+                    //_repositoryCompany.CreatePrivatePersonAccount(user.Id);
 
                     return RedirectToAction(nameof(HomeController.Index), "Home");
                 }
@@ -506,6 +554,7 @@ namespace BizMall.Controllers
         {
             foreach (var error in result.Errors)
             {
+                if (error.Code == "DuplicateUserName") error.Description = "Пользователь с таким Email уже зарегистрирован.";
                 ModelState.AddModelError(string.Empty, error.Description);
             }
         }
@@ -572,7 +621,7 @@ namespace BizMall.Controllers
         }
 
         /// <summary>
-        /// используестя после успешного добавлениия изображения в бД для формирования превью
+        /// ajax:используестя после успешного добавлениия изображения в бД для формирования превью
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
@@ -601,7 +650,7 @@ namespace BizMall.Controllers
         /// <returns></returns>
         [HttpPost]
         [AllowAnonymous]
-        public string DeleteGoodImage(string companyImagesIds)
+        public string DeleteCompanyImage(string companyImagesIds)
         {
             if (companyImagesIds != null)
             {
@@ -614,6 +663,22 @@ namespace BizMall.Controllers
                 return imageId.ToString();//для того чтобы front переделал строку id зиображений товара в актуальную
             }
             return null;
+        }
+        /// <summary>
+        /// ajax:удаление на лету изображения к товару
+        /// </summary>
+        /// <param name="goodImageIds"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [AllowAnonymous]
+        public bool DeleteCompanyImages(string companyImagesIds)
+        {
+            if (companyImagesIds != null)
+            {
+                int[] ids = GetIntIds.ConvertIdsToInt(companyImagesIds).ToArray();
+                _repositoryImage.DeleteImages(ids);
+            }
+            return true;
         }
     }
 }

@@ -14,7 +14,7 @@ using System.IO;
 namespace BizMall.Controllers
 {
     /// <summary>
-    /// 
+    /// ctor
     /// </summary>
     public class AdminCompanyGoodsController : Controller
     {
@@ -22,10 +22,10 @@ namespace BizMall.Controllers
         private readonly IRepositoryCompany _repositoryCompany;
         private readonly IRepositoryGood _repositoryGood;
         private readonly IRepositoryImage _repositoryImage;
-        
-        public AdminCompanyGoodsController(IRepositoryUser repositoryUser, 
-                                            IRepositoryCompany repositoryCompany, 
-                                            IRepositoryGood repositoryGood, 
+
+        public AdminCompanyGoodsController(IRepositoryUser repositoryUser,
+                                            IRepositoryCompany repositoryCompany,
+                                            IRepositoryGood repositoryGood,
                                             IRepositoryImage repositoryImage)
         {
             _repositoryUser = repositoryUser;
@@ -33,18 +33,19 @@ namespace BizMall.Controllers
             _repositoryGood = repositoryGood;
             _repositoryImage = repositoryImage;
         }
-       
+
         /// <summary>
         /// выбрать главное изображение товара
         /// </summary>
         /// <param name="GoodId"></param>
         /// <returns></returns>
-        public FileContentResult GetGoodMainImage(int GoodId) {
+        public FileContentResult GetGoodMainImage(int GoodId)
+        {
             Image image = _repositoryImage.GetGoodImage(GoodId);
             var fcr = File(image.ImageContent, image.ImageMimeType);
             return fcr;
         }
-        
+
         /// <summary>
         /// вывод товаров в личный кабинет компании
         /// </summary>
@@ -53,14 +54,15 @@ namespace BizMall.Controllers
         public IActionResult Goods(GoodStatus goodsStatus = GoodStatus.Active)
         {
             var currentUser = _repositoryUser.GetCurrentUser(User.Identity.Name);
-            
+
             if (currentUser != null)
             {
                 var Company = _repositoryCompany.GetUserCompany(currentUser);
                 var Goods = _repositoryGood.ShopGoodsFullInformation(Company.Id, goodsStatus).ToList();
 
                 List<GoodViewModel> GoodsVM = new List<GoodViewModel>();
-                foreach (var good in Goods) {
+                foreach (var good in Goods)
+                {
                     var iDaysToSetInActiveStatus = 31 - (DateTime.Now - good.UpdateTime).Days;
                     GoodViewModel gvm = new GoodViewModel
                     {
@@ -86,7 +88,7 @@ namespace BizMall.Controllers
             }
 
             ViewBag.ActiveSubMenu = "Товары/Услуги";
-            if(goodsStatus==GoodStatus.Active)
+            if (goodsStatus == GoodStatus.Active)
                 ViewBag.ActiveGoodsStatusMenu = 1;
             if (goodsStatus == GoodStatus.InActive)
                 ViewBag.ActiveGoodsStatusMenu = 0;
@@ -157,8 +159,9 @@ namespace BizMall.Controllers
 
                 //ФОРМИРУЕМ СПИСОК ИЗОБРАЖЕНИЙ
                 List<RelGoodImage> relImages = new List<RelGoodImage>();
-                //если строка id непуста тогда формируем список
-                if (model.goodImagesIds != null) {
+                //если строка id изображений непуста тогда формируем список
+                if (model.goodImagesIds != null)
+                {
                     string[] strImgids = model.goodImagesIds.Trim().Substring(0, model.goodImagesIds.Length - 1).Split('_');
                     foreach (var strImageId in strImgids)
                     {
@@ -202,12 +205,10 @@ namespace BizMall.Controllers
             return RedirectToAction("Goods", new { goodsStatus = goodsStatus });
         }
 
+        //ДЛЯ ajax
 
-
-        //для ajax
-        
         /// <summary>
-        /// деактивация товаров
+        /// ajax:деактивация товаров
         /// </summary>
         /// <param name="checkedGoods"></param>
         /// <returns></returns>
@@ -220,7 +221,7 @@ namespace BizMall.Controllers
         }
 
         /// <summary>
-        /// активация товаров
+        /// ajax:активация товаров
         /// </summary>
         /// <param name="checkedGoods"></param>
         /// <returns></returns>
@@ -235,7 +236,7 @@ namespace BizMall.Controllers
         /// <summary>
         /// ajax:добавление на лету изображения к товару
         /// </summary>
-        /// <param name="Id"></param>
+        /// <param name="Id">id товара</param>
         /// <param name="newimages"></param>
         /// <returns></returns>
         [HttpPost]
@@ -273,7 +274,7 @@ namespace BizMall.Controllers
         }
 
         /// <summary>
-        /// используестя после успешного добавлениия изображения в бД для формирования превью
+        ///  ajax:используестя после успешного добавлениия изображения в бД для формирования превью
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
@@ -313,6 +314,22 @@ namespace BizMall.Controllers
                 return imageId.ToString();//для того чтобы front переделал строку id зиображений товара в актуальную
             }
             return null;
+        }
+
+        /// <summary>
+        /// ajax:удаление добавленных на лету изображений товара в случае если пользователь нажал "Назад"
+        /// </summary>
+        /// <param name="goodImageIds"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public bool DeleteGoodImages(string goodImageIds)
+        {
+            if (goodImageIds != null)
+            {
+                int[] ids = GetIntIds.ConvertIdsToInt(goodImageIds).ToArray();
+                _repositoryImage.DeleteImages(ids);
+            }
+            return true;
         }
     }
 }
