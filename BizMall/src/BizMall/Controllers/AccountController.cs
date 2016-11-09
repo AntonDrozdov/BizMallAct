@@ -51,8 +51,7 @@ namespace BizMall.Controllers
             _repositoryImage = repositoryImage;
         }
 
-        //
-        // GET: /Account/Login
+        #region POST/GET Login 
         [HttpGet]
         [AllowAnonymous]
         public IActionResult Login(string returnUrl = null)
@@ -61,8 +60,6 @@ namespace BizMall.Controllers
             return View();
         }
 
-        //
-        // POST: /Account/Login
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -98,9 +95,9 @@ namespace BizMall.Controllers
             // If we got this far, something failed, redisplay form
             return View(model);
         }
+        #endregion
 
-        //
-        // GET: /Account/Register
+        #region POST/GET RegisterCompany 
         [HttpGet]
         [AllowAnonymous]
         public IActionResult RegisterCompany(string returnUrl = null)
@@ -111,8 +108,6 @@ namespace BizMall.Controllers
             return View(cecvm);
         }
 
-        //
-        // POST: /Account/Register
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -134,6 +129,7 @@ namespace BizMall.Controllers
                     await _signInManager.SignInAsync(user, isPersistent: false);
                     _logger.LogInformation(3, "User created a new account with password.");
 
+                    #region ФОРМИРУЕМ СПИСОК ИЗОБРАЖЕНИЙ
                     //ФОРМИРУЕМ СПИСОК ИЗОБРАЖЕНИЙ
                     List<RelCompanyImage> relImages = new List<RelCompanyImage>();
                     //если строка id изображений непуста тогда формируем список
@@ -150,7 +146,9 @@ namespace BizMall.Controllers
                             });
                         }
                     }
+                    #endregion
 
+                    #region СОЗДАНИЕ КОМПАНИИ
                     //При регистрации пользователя для него по умолчанию создается компания с параметрами которые он задал
                     _repositoryCompany.CreateCompanyAccount(new Company
                     {
@@ -162,12 +160,13 @@ namespace BizMall.Controllers
                         Telephone = model.Telephone,
                         Images = relImages
                     });
-
+                    #endregion
                     return RedirectToAction(nameof(HomeController.Index), "Home");
                 }
                 AddErrors(result);
             }
 
+            #region ОТОБРАЖЕНИЕ УЖЕ ДОБАВЛЕННЫХ ФОТОК ЕСЛИ ОШИБКА ПРИ СОХРАНЕНИИ
             // If we got this far, something failed, redisplay form
             // заполняем список изображений уже добавленных пользователем при регистрации
             if (model.companyImagesIds != null)
@@ -190,11 +189,13 @@ namespace BizMall.Controllers
                     );                    
                 }
             }
+            #endregion
+
             return View(model);
         }
+        #endregion
 
-        //
-        // GET: /Account/Register
+        #region POST/GET RegisterPrivatePerson 
         [HttpGet]
         [AllowAnonymous]
         public IActionResult RegisterPrivatePerson(string returnUrl = null)
@@ -203,8 +204,6 @@ namespace BizMall.Controllers
             return View();
         }
 
-        //
-        // POST: /Account/Register
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -226,20 +225,32 @@ namespace BizMall.Controllers
                     await _signInManager.SignInAsync(user, isPersistent: false);
                     _logger.LogInformation(3, "User created a new account with password.");
 
-                    //При регистрации пользователя для него по умолчанию создается магазин    
-                    //_repositoryCompany.CreatePrivatePersonAccount(user.Id);
+                    #region ФОРМИРУЕМ СПИСОК ИЗОБРАЖЕНИЙ
+                    //ФОРМИРУЕМ СПИСОК ИЗОБРАЖЕНИЙ - для PrivatePerson он пустой
+                    List<RelCompanyImage> relImages = new List<RelCompanyImage>();
+                    #endregion
 
+                    #region СОЗДАНИЕ КОМПАНИИ
+                    //При регистрации пользователя для него по умолчанию создается компания с параметрами которые он задал
+                    _repositoryCompany.CreateCompanyAccount(new Company
+                    {
+                        ApplicationUserId = user.Id,
+                        AccountType = AccountType.PrivatePerson,
+                        Title = model.Name,
+                        Description = model.ActivityDescription,
+                        ContactEmail = model.Email,
+                        Telephone = model.Telephone,
+                        Images = relImages
+                    });
+                    #endregion
                     return RedirectToAction(nameof(HomeController.Index), "Home");
                 }
                 AddErrors(result);
             }
-
-            // If we got this far, something failed, redisplay form
             return View(model);
         }
+        #endregion
 
-        //
-        // POST: /Account/LogOff
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> LogOff()
@@ -249,8 +260,6 @@ namespace BizMall.Controllers
             return RedirectToAction(nameof(HomeController.Index), "Home");
         }
 
-        //
-        // POST: /Account/ExternalLogin
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -262,8 +271,6 @@ namespace BizMall.Controllers
             return Challenge(properties, provider);
         }
 
-        //
-        // GET: /Account/ExternalLoginCallback
         [HttpGet]
         [AllowAnonymous]
         public async Task<IActionResult> ExternalLoginCallback(string returnUrl = null, string remoteError = null)
@@ -304,8 +311,6 @@ namespace BizMall.Controllers
             }
         }
 
-        //
-        // POST: /Account/ExternalLoginConfirmation
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -338,7 +343,6 @@ namespace BizMall.Controllers
             return View(model);
         }
 
-        // GET: /Account/ConfirmEmail
         [HttpGet]
         [AllowAnonymous]
         public async Task<IActionResult> ConfirmEmail(string userId, string code)
@@ -356,8 +360,7 @@ namespace BizMall.Controllers
             return View(result.Succeeded ? "ConfirmEmail" : "Error");
         }
 
-        //
-        // GET: /Account/ForgotPassword
+        #region POST/GET ForgotPassword
         [HttpGet]
         [AllowAnonymous]
         public IActionResult ForgotPassword()
@@ -365,8 +368,6 @@ namespace BizMall.Controllers
             return View();
         }
 
-        //
-        // POST: /Account/ForgotPassword
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -393,9 +394,8 @@ namespace BizMall.Controllers
             // If we got this far, something failed, redisplay form
             return View(model);
         }
+        #endregion
 
-        //
-        // GET: /Account/ForgotPasswordConfirmation
         [HttpGet]
         [AllowAnonymous]
         public IActionResult ForgotPasswordConfirmation()
@@ -403,8 +403,7 @@ namespace BizMall.Controllers
             return View();
         }
 
-        //
-        // GET: /Account/ResetPassword
+        #region POST/GET ResetPassword
         [HttpGet]
         [AllowAnonymous]
         public IActionResult ResetPassword(string code = null)
@@ -412,8 +411,6 @@ namespace BizMall.Controllers
             return code == null ? View("Error") : View();
         }
 
-        //
-        // POST: /Account/ResetPassword
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -437,18 +434,15 @@ namespace BizMall.Controllers
             AddErrors(result);
             return View();
         }
+        #endregion
 
-        //
-        // GET: /Account/ResetPasswordConfirmation
         [HttpGet]
         [AllowAnonymous]
         public IActionResult ResetPasswordConfirmation()
         {
             return View();
         }
-
-        //
-        // GET: /Account/SendCode
+        
         [HttpGet]
         [AllowAnonymous]
         public async Task<ActionResult> SendCode(string returnUrl = null, bool rememberMe = false)
@@ -463,8 +457,6 @@ namespace BizMall.Controllers
             return View(new SendCodeViewModel { Providers = factorOptions, ReturnUrl = returnUrl, RememberMe = rememberMe });
         }
 
-        //
-        // POST: /Account/SendCode
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -501,8 +493,7 @@ namespace BizMall.Controllers
             return RedirectToAction(nameof(VerifyCode), new { Provider = model.SelectedProvider, ReturnUrl = model.ReturnUrl, RememberMe = model.RememberMe });
         }
 
-        //
-        // GET: /Account/VerifyCode
+        #region POST/GET VerifyCode
         [HttpGet]
         [AllowAnonymous]
         public async Task<IActionResult> VerifyCode(string provider, bool rememberMe, string returnUrl = null)
@@ -516,8 +507,6 @@ namespace BizMall.Controllers
             return View(new VerifyCodeViewModel { Provider = provider, ReturnUrl = returnUrl, RememberMe = rememberMe });
         }
 
-        //
-        // POST: /Account/VerifyCode
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -547,6 +536,7 @@ namespace BizMall.Controllers
                 return View(model);
             }
         }
+        #endregion
 
         #region Helpers
 
@@ -578,8 +568,7 @@ namespace BizMall.Controllers
 
         #endregion
 
-        ///для ajax
-
+        #region FOR AJAX
         /// <summary>
         /// ajax:добавление на лету изображения к товару
         /// </summary>
@@ -680,5 +669,6 @@ namespace BizMall.Controllers
             }
             return true;
         }
+        #endregion
     }
 }

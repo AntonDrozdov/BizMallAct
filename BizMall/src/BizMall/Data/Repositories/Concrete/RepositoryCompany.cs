@@ -35,11 +35,6 @@ namespace BizMall.Data.Repositories.Concrete
             return company;
         }
 
-        public Company CreatePrivatePersonAccount(string userId, CreateEditCompanyViewModel model)
-        {
-            throw new NotImplementedException();
-        }
-
         public IEnumerable<Company> GetAllCompanies()
         {
             throw new NotImplementedException();

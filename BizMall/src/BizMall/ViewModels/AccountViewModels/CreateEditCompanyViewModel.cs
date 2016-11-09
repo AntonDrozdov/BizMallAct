@@ -10,7 +10,6 @@ namespace BizMall.ViewModels.AccountViewModels
         [Display(Name = "Name")]
         public string Name { get; set; }
 
-        [Required]
         [Display(Name = "ActivityDescription")]
         public string ActivityDescription { get; set; }
 

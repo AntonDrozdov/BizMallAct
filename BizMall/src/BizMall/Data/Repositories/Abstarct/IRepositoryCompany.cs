@@ -15,6 +15,5 @@ namespace BizMall.Data.Repositories.Abstract
         Company GetUserCompany(ApplicationUser currentUser);
         Company GetCompany(int companyId);
         Company CreateCompanyAccount(Company company);
-        Company CreatePrivatePersonAccount(string userId, CreateEditCompanyViewModel model);
     }
 }
