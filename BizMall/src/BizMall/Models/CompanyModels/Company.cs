@@ -22,6 +22,7 @@ namespace BizMall.Models.CompanyModels
         public Company()
         {
             Goods = new List<RelCompanyGood>();
+            Images = new List<RelCompanyImage>();
         }
     }
 }

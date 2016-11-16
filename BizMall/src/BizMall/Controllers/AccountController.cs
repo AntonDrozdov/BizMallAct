@@ -150,7 +150,7 @@ namespace BizMall.Controllers
 
                     #region СОЗДАНИЕ КОМПАНИИ
                     //При регистрации пользователя для него по умолчанию создается компания с параметрами которые он задал
-                    _repositoryCompany.CreateCompanyAccount(new Company
+                    _repositoryCompany.SaveCompanyAccount(new Company
                     {
                         ApplicationUserId = user.Id,
                         AccountType = AccountType.Company,
@@ -232,7 +232,7 @@ namespace BizMall.Controllers
 
                     #region СОЗДАНИЕ КОМПАНИИ
                     //При регистрации пользователя для него по умолчанию создается компания с параметрами которые он задал
-                    _repositoryCompany.CreateCompanyAccount(new Company
+                    _repositoryCompany.SaveCompanyAccount(new Company
                     {
                         ApplicationUserId = user.Id,
                         AccountType = AccountType.PrivatePerson,

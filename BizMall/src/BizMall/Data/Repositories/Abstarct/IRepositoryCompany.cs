@@ -13,7 +13,8 @@ namespace BizMall.Data.Repositories.Abstract
     {
         IEnumerable<Company> GetAllCompanies();
         Company GetUserCompany(ApplicationUser currentUser);
+        Company GetUserCompanyWithNoTrackingImages(ApplicationUser currentUser);
         Company GetCompany(int companyId);
-        Company CreateCompanyAccount(Company company);
+        Company SaveCompanyAccount(Company company);
     }
 }

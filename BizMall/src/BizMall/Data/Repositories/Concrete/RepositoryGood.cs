@@ -156,7 +156,6 @@ namespace BizMall.Data.Repositories.Concrete
     }
 }
 
-
 ////сначала добавляем картинки в бд и тут же в коллекцию изображений товара
 //foreach (IFormFile im in newimages)
 //{

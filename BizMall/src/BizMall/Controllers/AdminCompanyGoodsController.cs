@@ -184,8 +184,6 @@ namespace BizMall.Controllers
                     UpdateTime = DateTime.Now
                 },
                 company);
-
-                return RedirectToAction("Goods");
             }
             return RedirectToAction("Goods");
         }
