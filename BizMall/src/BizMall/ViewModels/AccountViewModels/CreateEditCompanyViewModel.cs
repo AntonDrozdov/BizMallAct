@@ -1,4 +1,5 @@
 ﻿using BizMall.ViewModels.AdminCompanyGoods;
+using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
@@ -6,6 +7,9 @@ namespace BizMall.ViewModels.AccountViewModels
 {
     public class CreateEditCompanyViewModel
     {
+        [HiddenInput(DisplayValue = false)]
+        public int Id { get; set; }
+
         [Required]
         [Display(Name = "Name")]
         public string Name { get; set; }

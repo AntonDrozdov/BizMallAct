@@ -22,8 +22,28 @@ namespace BizMall.Data.Repositories.Concrete
             return item; 
         }
 
+        public void ChangeImageToDeleteStatus(int imageId)
+        {
+            Image dbEntry = _ctx.Images.Where(i => i.Id == imageId).FirstOrDefault();
+            dbEntry.ToDelete = true;
+
+            _ctx.Entry(dbEntry).State = EntityState.Modified;
+            _ctx.SaveChanges();
+        }
+
+        public void ChangeImagesToNonDeleteStatus(int[] ids)
+        {
+            var images = _ctx.Images.Where(i => ids.Contains(i.Id));
+            foreach(var im in images)
+                im.ToDelete = false;
+
+            _ctx.Images.UpdateRange(images);
+            _ctx.SaveChanges();
+        }
+
         public void DeleteImage(int imageId) {
             Image image = _ctx.Images.Where(i => i.Id == imageId).FirstOrDefault();
+
             _ctx.Images.Remove(image);
             _ctx.SaveChanges();
         }

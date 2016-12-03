@@ -44,8 +44,9 @@ namespace BizMall.Controllers
                 case AccountType.Company:
                 {
                     #region редирект на view для Company
-                    var cecvm = new CreateEditCompanyViewModel
+                     var cecvm = new CreateEditCompanyViewModel
                     {
+                        Id = Company.Id,
                         Name = Company.Title,
                         ActivityDescription = Company.Description,
                         Email = Company.ContactEmail,

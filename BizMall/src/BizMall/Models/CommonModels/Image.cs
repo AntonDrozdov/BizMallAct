@@ -21,6 +21,8 @@ namespace BizMall.Models.CommonModels
         public List<RelGoodImage> Goods { get; set; }
         public List<RelCompanyImage> Companies { get; set; }
 
+        public bool ToDelete { get; set; }
+
         public Image() {
             Goods = new List<RelGoodImage>();
             Companies = new List<RelCompanyImage>();

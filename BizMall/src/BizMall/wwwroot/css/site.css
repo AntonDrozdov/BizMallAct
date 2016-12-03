@@ -16,16 +16,33 @@ select,
 textarea {
     max-width: 900px;
 }
+
+.menu 
+{
+margin-top: 10px; 
+width: 110px; /* Ширина слоя */
+padding: 0 10px; /* Отступы вокруг текста */
+float: left; /* Обтекание по правому краю */
+}
+.mainbanner {
+margin-left: 130px; /* Отступ слева */
+padding: 5px; /* Поля вокруг текста */
+background: #fff; /* Цвет фона правой колонки */
+float: left;
+}
+
+
+
 /*отображение таблицы изображении в диалоге добавления/редактирования товара*/
 .imagetable {
-    float:left;
     margin:5px;
+    //margin-left:50px;
     padding:5px;
 }
 .thumb {
 
-    max-height:100px;
-    max-width:100px;
+    /*height:40px;*/
+    width:90px;
 }
 .imagethumbcell {
     text-align:center;
@@ -57,7 +74,8 @@ textarea {
 }
 
 .btn-newpos {
-    width:200px;
+    font-size:15px;
+        width:190px;
     font-weight:bold;
 }
 .chekpic {
@@ -185,4 +203,45 @@ textarea {
   .carousel-caption {
     display: none
   }
+
+  /*For head*/
+
+    .navbar-nav > li, .navbar-nav > form li {
+        /*border-top: 1px solid red;*/
+    }
+
+    .navbar-nav > li:first-child, .navbar-nav > form li:first-child {
+        /*border-top: none;*/
+    }
+
+    /*For sub nav */
+    #navbar {
+        margin-top: 0 !important;
+    }
+
+    .divider{
+        border-width:80%;
+        border-top: 1px solid #686868;
+    }
+
+    #navbar-sub-header {
+        background-color: transparent; 
+        border: none;
+    }
+
+        #navbar-sub-header div {
+            margin-top: 10px;
+        }
+
+        #navbar-sub-header button {
+            float: initial;
+            margin: 0 auto; 
+            position: static; 
+            display: block; 
+            background-color: transparent;
+        }
+
+    #navbarCollapseCat {
+        border-top: none;
+    }
 }

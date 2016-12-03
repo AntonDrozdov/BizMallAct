@@ -269,6 +269,8 @@ E:\!DEVELOP\BizMallAct\BizMall\src\BizMall\Migrations\20161015122858_AddFieldsTo
 E:\!DEVELOP\BizMallAct\BizMall\src\BizMall\Migrations\20161015122858_AddFieldsToCompany.Designer.cs
 E:\!DEVELOP\BizMallAct\BizMall\src\BizMall\Migrations\20161017152152_AddCompanyImageMToMRelation.cs
 E:\!DEVELOP\BizMallAct\BizMall\src\BizMall\Migrations\20161017152152_AddCompanyImageMToMRelation.Designer.cs
+E:\!DEVELOP\BizMallAct\BizMall\src\BizMall\Migrations\20161122150453_AddToDeleteFiledToImageTable.cs
+E:\!DEVELOP\BizMallAct\BizMall\src\BizMall\Migrations\20161122150453_AddToDeleteFiledToImageTable.Designer.cs
 E:\!DEVELOP\BizMallAct\BizMall\src\BizMall\Migrations\ApplicationDbContextModelSnapshot.cs
 E:\!DEVELOP\BizMallAct\BizMall\src\BizMall\Models\ApplicationUser.cs
 E:\!DEVELOP\BizMallAct\BizMall\src\BizMall\Models\CommonModels\Image.cs

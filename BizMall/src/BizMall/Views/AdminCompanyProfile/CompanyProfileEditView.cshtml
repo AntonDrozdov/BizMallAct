@@ -11,7 +11,7 @@
 
 @model BizMall.ViewModels.AccountViewModels.CreateEditCompanyViewModel
 @{
-    ViewData["Title"] = "Регистрация";
+    ViewData["Title"] = "Профиль";
 }
 
 <h2>@ViewData["Title"]</h2>
@@ -47,6 +47,12 @@
         </div>
     </div>
     <br />-->
+    <!--Id добавляемого/редактируемого товара-->
+    @if (Model.Id != 0)
+    {
+        <input asp-for="Id" type="hidden" class="form-control" id="Id" readonly="readonly" Value="@Model.Id" />
+    }
+
     <!--НАЗВАНИЕ-->
     <div class="form-group">
         <label class="col-md-2 control-label">Название:</label>
@@ -72,9 +78,9 @@
         @if (Model.LogoImageInBase64 == null)
         {
             <div class="form-group">
-                <div class="col-md-8">
+                <div class="col-md-10">
                     <div class="imageTable">
-                        <table>
+                        <table style="margin-left:25px;">
                             <tr id="images">
                                 <td style="text-align:center;padding:3px;"></td>
                             </tr>
@@ -88,7 +94,7 @@
             <div class="form-group">
                 <div class="col-md-8">
                     <div class="imageTable">
-                        <table>
+                        <table style="margin-left:25px;">
                             <tr id="images">
                                 @foreach (var imageViewModel in Model.ImageViewModels)
                                 {
@@ -109,18 +115,18 @@
         @*<input asp-for="CompanyLogoId" type="hidden" id="goodImagesIds" readonly="readonly" value="@Model.CompanyLogo" />*@
         <div class="col-md-2"></div>
         <div class="form-group">
-            <div class="col-md-3">
-                <a class='btn btn-default' style="height:35px; margin-bottom:5px;">
-                    Загрузить логотип ...
-                    <input type="file"
-                           id="loadfile"
-                           name="newimages"
-                           style="position: absolute;z-index: 2; top: 0; left: 0; opacity: 0; background-color: transparent;color: transparent;"
-                           onchange='saveImage();'>
-                </a>
+                <div class="col-md-8">
+                    <a class='btn btn-default col-md-3' style="height:35px; margin-bottom:5px;margin-left:25px;">
+                        Загрузить логотип ...
+                        <input type="file"
+                               id="loadfile"
+                               name="newimages"
+                               style="position: absolute;z-index: 2; top: 0; left: 0; opacity: 0; background-color: transparent;color: transparent;"
+                               onchange='saveImage();'>
+                    </a>
+                </div>
+                <input asp-for="companyImagesIds" type="hidden" id="companyImagesIds" readonly="readonly" value="@Model.companyImagesIds" />
             </div>
-            <input asp-for="companyImagesIds" type="hidden" id="companyImagesIds" readonly="readonly" value="@Model.companyImagesIds" />
-        </div>
     </div>
 
     <!--ТЕЛЕФОН-->

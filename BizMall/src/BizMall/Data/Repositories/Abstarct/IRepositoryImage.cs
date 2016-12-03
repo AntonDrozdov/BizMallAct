@@ -12,6 +12,8 @@ namespace BizMall.Data.Repositories.Abstract
         Image SaveImage(Image item);
         Image GetImage(int ImageId);
         void DeleteImage(int ImageId);
+        void ChangeImageToDeleteStatus(int ImageId);
+        void ChangeImagesToNonDeleteStatus(int[] ids);
         void DeleteImages(int[] ids);
         Image GetGoodImage(int GoodId);
     }

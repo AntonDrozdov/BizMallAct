@@ -184,6 +184,11 @@ namespace BizMall.Controllers
                     UpdateTime = DateTime.Now
                 },
                 company);
+                if (model.deletedImagesIds != null)
+                {
+                    int[] ids = GetIntIds.ConvertIdsToInt(model.deletedImagesIds).ToArray();
+                    _repositoryImage.DeleteImages(ids);
+                }
             }
             return RedirectToAction("Goods");
         }
@@ -264,7 +269,6 @@ namespace BizMall.Controllers
                         GoodId = Id
                     });
                 }
-
             }
 
             //картинки в бд
@@ -307,12 +311,35 @@ namespace BizMall.Controllers
 
                 int goodId = Convert.ToInt32(parameteres[0]);
                 int imageId = Convert.ToInt32(parameteres[1]);
-                _repositoryImage.DeleteImage(imageId);
+                _repositoryImage.ChangeImageToDeleteStatus(imageId);
 
                 return imageId.ToString();//для того чтобы front переделал строку id зиображений товара в актуальную
             }
             return null;
         }
+
+        /// <summary>
+        /// ajax:восстановление/удаление фоток при "Назад"
+        /// </summary>
+        /// <param name="goodImageIds"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public string RestoreImages(string goodImageIds, string addedImagesIds, string deletedImagesIds)
+        {
+            if (deletedImagesIds != null)
+            {
+                int[] ids = GetIntIds.ConvertIdsToInt(deletedImagesIds).ToArray();
+                _repositoryImage.ChangeImagesToNonDeleteStatus(ids);               
+            }
+            if (addedImagesIds!=null)
+            {
+                int[] ids = GetIntIds.ConvertIdsToInt(addedImagesIds).ToArray();
+                _repositoryImage.DeleteImages(ids);
+            }
+            return "success";//для того чтобы front переделал строку id зиображений товара в актуальную
+        }
+
+
 
         /// <summary>
         /// ajax:удаление добавленных на лету изображений товара в случае если пользователь нажал "Назад"
